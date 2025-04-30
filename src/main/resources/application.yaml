@@ -1,0 +1,28 @@
+camunda:
+  bpm:
+    admin-user:
+      id: demo
+      password: demo
+    filter:
+      create: All tasks
+    database:
+      schema-update: true
+      type: postgres
+    history-level: full
+    history-level-default: full
+    history-cleanup-enable: false
+    generic-properties:
+      properties:
+        enforceHistoryTimeToLive: "false"
+
+
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/camunda
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
