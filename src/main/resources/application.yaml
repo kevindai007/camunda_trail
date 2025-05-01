@@ -26,3 +26,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: true
+
+logging:
+  level:
+    # 1️⃣  Core engine + flush summaries
+    org.camunda.bpm.engine.persistence: DEBUG
+    # 2️⃣  All entity-specific SQL (tasks, variables, jobs, …)
+    org.camunda.bpm.engine.impl.persistence.entity: DEBUG
+    # 3️⃣  Low-level JDBC statements (optional but useful)
+    org.camunda.bpm.engine.impl.db.sql: DEBUG          # SQL only
+    org.apache.ibatis.logging.jdbc.BaseJdbcLogger: TRACE # SQL + bound params
