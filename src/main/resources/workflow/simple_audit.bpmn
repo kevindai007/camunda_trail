@@ -2,17 +2,21 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ilpe9v" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.33.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
   <bpmn:process id="payment-retrival" name="Payment Retrival" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements />
       <bpmn:outgoing>Flow_0md8ajc</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:endEvent id="Event_1pokaeo">
       <bpmn:incoming>Flow_1t0nyvu</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="Activity_046wpch" name="audit one" camunda:assignee="domo1">
+    <bpmn:userTask id="Activity_046wpch" name="audit one" camunda:candidateGroups="devlead">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.kevindai.base.camunda_trail.listener.GroupAutoClaimListener" event="create" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0md8ajc</bpmn:incoming>
       <bpmn:outgoing>Flow_0yzpnfr</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0md8ajc" sourceRef="StartEvent_1" targetRef="Activity_046wpch" />
-    <bpmn:userTask id="Activity_0aq6w7e" name="audit two" camunda:assignee="demo2">
+    <bpmn:userTask id="Activity_0aq6w7e" name="audit two" camunda:candidateGroups="deplead">
       <bpmn:incoming>Flow_0yzpnfr</bpmn:incoming>
       <bpmn:outgoing>Flow_1t0nyvu</bpmn:outgoing>
     </bpmn:userTask>
@@ -21,35 +25,33 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="payment-retrival">
+      <bpmndi:BPMNShape id="Event_1pokaeo_di" bpmnElement="Event_1pokaeo">
+        <dc:Bounds x="662" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
-        <dc:Bounds x="182" y="102" width="36" height="36" />
+        <dc:Bounds x="142" y="102" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_046wpch_di" bpmnElement="Activity_046wpch">
-        <dc:Bounds x="330" y="80" width="100" height="80" />
+        <dc:Bounds x="260" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1pokaeo_di" bpmnElement="Event_1pokaeo">
-        <dc:Bounds x="592" y="62" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0aq6w7e_di" bpmnElement="Activity_0aq6w7e">
-        <dc:Bounds x="510" y="100" width="100" height="80" />
+        <dc:Bounds x="460" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0md8ajc_di" bpmnElement="Flow_0md8ajc">
-        <di:waypoint x="218" y="120" />
-        <di:waypoint x="330" y="120" />
+        <di:waypoint x="178" y="120" />
+        <di:waypoint x="260" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0yzpnfr_di" bpmnElement="Flow_0yzpnfr">
-        <di:waypoint x="430" y="120" />
-        <di:waypoint x="480" y="120" />
-        <di:waypoint x="480" y="140" />
-        <di:waypoint x="510" y="140" />
+        <di:waypoint x="360" y="120" />
+        <di:waypoint x="460" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1t0nyvu_di" bpmnElement="Flow_1t0nyvu">
-        <di:waypoint x="560" y="100" />
-        <di:waypoint x="560" y="42" />
-        <di:waypoint x="610" y="42" />
-        <di:waypoint x="610" y="62" />
+        <di:waypoint x="510" y="80" />
+        <di:waypoint x="510" y="42" />
+        <di:waypoint x="680" y="42" />
+        <di:waypoint x="680" y="122" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

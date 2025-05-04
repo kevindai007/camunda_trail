@@ -58,13 +58,27 @@ public class WorkFlowManagementController {
      * @param definitionId id in table:act_re_procdef
      * @return ProcessInstance id,executionId in table:act_ru_task
      */
-    @PostMapping("/start-process/{definitionId}")
-    public ResponseEntity<String> startProcess(@PathVariable String definitionId) {
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(definitionId).singleResult();
+//    @PostMapping("/start-process/{definitionId}")
+//    public ResponseEntity<String> startProcess(@PathVariable String definitionId) {
+//        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(definitionId).singleResult();
+//        if (processDefinition == null) {
+//            return ResponseEntity.badRequest().body("Deployment not found");
+//        }
+//        ProcessInstance processInstance = runtimeService.startProcessInstanceById(definitionId);
+//        return ResponseEntity.ok(processInstance.getId());
+//    }
+
+    /**
+     * @param processKey
+     * @return
+     */
+    @PostMapping("/start-process/{processKey}")
+    public ResponseEntity<String> startProcess(@PathVariable String processKey) {
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processKey).latestVersion().singleResult();
         if (processDefinition == null) {
             return ResponseEntity.badRequest().body("Deployment not found");
         }
-        ProcessInstance processInstance = runtimeService.startProcessInstanceById(definitionId);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey);
         return ResponseEntity.ok(processInstance.getId());
     }
 
