@@ -1,9 +1,11 @@
 package com.kevindai.base.camunda_trail.controller;
 
 import com.kevindai.base.camunda_trail.dto.CreateDeploymentRequest;
+import com.kevindai.base.camunda_trail.dto.ProcessStarterRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
@@ -24,6 +26,7 @@ public class WorkFlowManagementController {
     private final RepositoryService repositoryService;
     private final RuntimeService runtimeService;
     private final TaskService taskService;
+    private final IdentityService identityService;
 
     @PostMapping("/deploy")
     public ResponseEntity<String> deploy(@RequestBody @Valid CreateDeploymentRequest createDeploymentRequest) {
@@ -73,12 +76,13 @@ public class WorkFlowManagementController {
      * @return
      */
     @PostMapping("/start-process/{processKey}")
-    public ResponseEntity<String> startProcess(@PathVariable String processKey) {
+    public ResponseEntity<String> startProcess(@PathVariable String processKey, @RequestBody ProcessStarterRequest processStarterRequest) {
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processKey).latestVersion().singleResult();
         if (processDefinition == null) {
             return ResponseEntity.badRequest().body("Deployment not found");
         }
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey);
+        identityService.setAuthenticatedUserId("kevin");
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey, processStarterRequest.getVariables());
         return ResponseEntity.ok(processInstance.getId());
     }
 

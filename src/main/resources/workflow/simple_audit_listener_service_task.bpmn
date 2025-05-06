@@ -1,31 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ilpe9v" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.33.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
-  <bpmn:process id="simple-audit" name="Simple Audit" isExecutable="true">
-    <bpmn:startEvent id="StartEvent_1">
+  <bpmn:process id="simple-audit-task" name="Simple Audit Service Task" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" camunda:initiator="initiator">
       <bpmn:extensionElements />
       <bpmn:outgoing>Flow_0md8ajc</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:endEvent id="Event_1pokaeo">
-      <bpmn:incoming>Flow_1t0nyvu</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:userTask id="Activity_046wpch" name="audit one" camunda:candidateGroups="devlead">
-      <bpmn:extensionElements />
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.kevindai.base.camunda_trail.listener.GroupAutoClaimListener" event="create" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0md8ajc</bpmn:incoming>
       <bpmn:outgoing>Flow_0yzpnfr</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0md8ajc" sourceRef="StartEvent_1" targetRef="Activity_046wpch" />
     <bpmn:userTask id="Activity_0aq6w7e" name="audit two" camunda:candidateGroups="deplead">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.kevindai.base.camunda_trail.listener.GroupAutoClaimListener" event="create" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0yzpnfr</bpmn:incoming>
-      <bpmn:outgoing>Flow_1t0nyvu</bpmn:outgoing>
+      <bpmn:outgoing>Flow_18ckcnu</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0yzpnfr" sourceRef="Activity_046wpch" targetRef="Activity_0aq6w7e" />
-    <bpmn:sequenceFlow id="Flow_1t0nyvu" sourceRef="Activity_0aq6w7e" targetRef="Event_1pokaeo" />
+    <bpmn:serviceTask id="Activity_0md09a1" name="notification" camunda:class="com.kevindai.base.camunda_trail.service.TaskFinishNotificationService">
+      <bpmn:incoming>Flow_18ckcnu</bpmn:incoming>
+      <bpmn:outgoing>Flow_12w85uy</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_18ckcnu" sourceRef="Activity_0aq6w7e" targetRef="Activity_0md09a1" />
+    <bpmn:endEvent id="Event_107l9qm">
+      <bpmn:incoming>Flow_12w85uy</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_12w85uy" sourceRef="Activity_0md09a1" targetRef="Event_107l9qm" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="simple-audit">
-      <bpmndi:BPMNShape id="Event_1pokaeo_di" bpmnElement="Event_1pokaeo">
-        <dc:Bounds x="662" y="122" width="36" height="36" />
-      </bpmndi:BPMNShape>
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="simple-audit-task">
       <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="142" y="102" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -37,6 +44,13 @@
         <dc:Bounds x="460" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_107l9qm_di" bpmnElement="Event_107l9qm">
+        <dc:Bounds x="872" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0md09a1_di" bpmnElement="Activity_0md09a1">
+        <dc:Bounds x="640" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0md8ajc_di" bpmnElement="Flow_0md8ajc">
         <di:waypoint x="178" y="120" />
         <di:waypoint x="260" y="120" />
@@ -45,11 +59,13 @@
         <di:waypoint x="360" y="120" />
         <di:waypoint x="460" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1t0nyvu_di" bpmnElement="Flow_1t0nyvu">
-        <di:waypoint x="510" y="80" />
-        <di:waypoint x="510" y="42" />
-        <di:waypoint x="680" y="42" />
-        <di:waypoint x="680" y="122" />
+      <bpmndi:BPMNEdge id="Flow_18ckcnu_di" bpmnElement="Flow_18ckcnu">
+        <di:waypoint x="560" y="120" />
+        <di:waypoint x="640" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12w85uy_di" bpmnElement="Flow_12w85uy">
+        <di:waypoint x="740" y="120" />
+        <di:waypoint x="872" y="120" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
