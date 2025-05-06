@@ -9,12 +9,17 @@
       <bpmn:incoming>Flow_1t0nyvu</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="Activity_046wpch" name="audit one" camunda:candidateGroups="devlead">
-      <bpmn:extensionElements />
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.kevindai.base.camunda_trail.listener.GroupAutoClaimListener" event="create" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0md8ajc</bpmn:incoming>
       <bpmn:outgoing>Flow_0yzpnfr</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0md8ajc" sourceRef="StartEvent_1" targetRef="Activity_046wpch" />
     <bpmn:userTask id="Activity_0aq6w7e" name="audit two" camunda:candidateGroups="deplead">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.kevindai.base.camunda_trail.listener.GroupAutoClaimListener" event="create" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0yzpnfr</bpmn:incoming>
       <bpmn:outgoing>Flow_1t0nyvu</bpmn:outgoing>
     </bpmn:userTask>
@@ -23,11 +28,11 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="payment-retrival">
-      <bpmndi:BPMNShape id="Event_1pokaeo_di" bpmnElement="Event_1pokaeo">
-        <dc:Bounds x="662" y="122" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="142" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1pokaeo_di" bpmnElement="Event_1pokaeo">
+        <dc:Bounds x="662" y="122" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_046wpch_di" bpmnElement="Activity_046wpch">
         <dc:Bounds x="260" y="80" width="100" height="80" />
