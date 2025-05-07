@@ -86,7 +86,6 @@ public class WorkFlowManagementController {
         return ResponseEntity.ok(processInstance.getId());
     }
 
-
     @PostMapping("/run-process/{executionId}")
     public ResponseEntity<String> runProcess(@PathVariable String executionId) {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(executionId).singleResult();
