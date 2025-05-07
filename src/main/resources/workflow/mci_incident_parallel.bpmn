@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ilpe9v" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.33.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
+  <bpmn:process id="mci-incident-parallel" name="Mci Handling" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" camunda:initiator="initiator">
+      <bpmn:extensionElements />
+      <bpmn:outgoing>Flow_0md8ajc</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0md8ajc" sourceRef="StartEvent_1" targetRef="Activity_046wpch" />
+    <bpmn:userTask id="Activity_0aq6w7e" name="Hospital Recommend" camunda:candidateGroups="devlead">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.kevindai.base.camunda_trail.listener.GroupAutoClaimListener" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0x2s4y1</bpmn:incoming>
+      <bpmn:outgoing>Flow_18ckcnu</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0z5t69y</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0o7almr</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_0md09a1" name="Send Notification to HLO" camunda:class="com.kevindai.base.camunda_trail.service.NotificationSenderService">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="role">HLO</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_18ckcnu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ltinqs</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_18ckcnu" sourceRef="Activity_0aq6w7e" targetRef="Activity_0md09a1" />
+    <bpmn:serviceTask id="Activity_046wpch" name="Send Notification to Umoc Agent" camunda:class="com.kevindai.base.camunda_trail.service.NotificationSenderService">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="role">Umoc</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0md8ajc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0x2s4y1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0x2s4y1" sourceRef="Activity_046wpch" targetRef="Activity_0aq6w7e" />
+    <bpmn:serviceTask id="Activity_0jczpdb" name="Push Result to ADCDA" camunda:class="com.kevindai.base.camunda_trail.service.PushMciResultService">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="target">ADCDA</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0z5t69y</bpmn:incoming>
+      <bpmn:outgoing>Flow_0x72xmn</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0z5t69y" sourceRef="Activity_0aq6w7e" targetRef="Activity_0jczpdb" />
+    <bpmn:parallelGateway id="Gateway_0rbus9b">
+      <bpmn:incoming>Flow_1ltinqs</bpmn:incoming>
+      <bpmn:incoming>Flow_0x72xmn</bpmn:incoming>
+      <bpmn:incoming>Flow_1s6mi0n</bpmn:incoming>
+      <bpmn:outgoing>Flow_08iafnf</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_1ltinqs" sourceRef="Activity_0md09a1" targetRef="Gateway_0rbus9b" />
+    <bpmn:sequenceFlow id="Flow_0x72xmn" sourceRef="Activity_0jczpdb" targetRef="Gateway_0rbus9b" />
+    <bpmn:endEvent id="Event_0f5n7l0">
+      <bpmn:incoming>Flow_08iafnf</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_08iafnf" sourceRef="Gateway_0rbus9b" targetRef="Event_0f5n7l0" />
+    <bpmn:userTask id="Activity_1vxj829" name="Beds Update" camunda:candidateGroups="deplead">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.kevindai.base.camunda_trail.listener.GroupAutoClaimListener" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0o7almr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1s6mi0n</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0o7almr" sourceRef="Activity_0aq6w7e" targetRef="Activity_1vxj829" />
+    <bpmn:sequenceFlow id="Flow_1s6mi0n" sourceRef="Activity_1vxj829" targetRef="Gateway_0rbus9b" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="mci-incident-parallel">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="142" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01xsqeq_di" bpmnElement="Activity_046wpch">
+        <dc:Bounds x="260" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0aq6w7e_di" bpmnElement="Activity_0aq6w7e">
+        <dc:Bounds x="440" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0md09a1_di" bpmnElement="Activity_0md09a1">
+        <dc:Bounds x="730" y="120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18s00s4_di" bpmnElement="Activity_0jczpdb">
+        <dc:Bounds x="730" y="240" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0rbus9b_di" bpmnElement="Gateway_0rbus9b">
+        <dc:Bounds x="955" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0f5n7l0_di" bpmnElement="Event_0f5n7l0">
+        <dc:Bounds x="1072" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0nepgdj" bpmnElement="Activity_1vxj829">
+        <dc:Bounds x="730" y="360" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0md8ajc_di" bpmnElement="Flow_0md8ajc">
+        <di:waypoint x="178" y="230" />
+        <di:waypoint x="260" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18ckcnu_di" bpmnElement="Flow_18ckcnu">
+        <di:waypoint x="540" y="230" />
+        <di:waypoint x="640" y="230" />
+        <di:waypoint x="640" y="160" />
+        <di:waypoint x="730" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x2s4y1_di" bpmnElement="Flow_0x2s4y1">
+        <di:waypoint x="360" y="230" />
+        <di:waypoint x="440" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z5t69y_di" bpmnElement="Flow_0z5t69y">
+        <di:waypoint x="540" y="230" />
+        <di:waypoint x="635" y="230" />
+        <di:waypoint x="635" y="280" />
+        <di:waypoint x="730" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ltinqs_di" bpmnElement="Flow_1ltinqs">
+        <di:waypoint x="830" y="160" />
+        <di:waypoint x="980" y="160" />
+        <di:waypoint x="980" y="195" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x72xmn_di" bpmnElement="Flow_0x72xmn">
+        <di:waypoint x="830" y="280" />
+        <di:waypoint x="980" y="280" />
+        <di:waypoint x="980" y="245" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08iafnf_di" bpmnElement="Flow_08iafnf">
+        <di:waypoint x="1005" y="220" />
+        <di:waypoint x="1072" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o7almr_di" bpmnElement="Flow_0o7almr">
+        <di:waypoint x="540" y="230" />
+        <di:waypoint x="635" y="230" />
+        <di:waypoint x="635" y="400" />
+        <di:waypoint x="730" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1s6mi0n_di" bpmnElement="Flow_1s6mi0n">
+        <di:waypoint x="830" y="400" />
+        <di:waypoint x="980" y="400" />
+        <di:waypoint x="980" y="245" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
