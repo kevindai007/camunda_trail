@@ -15,6 +15,7 @@ import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -76,13 +77,13 @@ public class WorkFlowManagementController {
      * @return
      */
     @PostMapping("/start-process/{processKey}")
-    public ResponseEntity<String> startProcess(@PathVariable String processKey, @RequestBody ProcessStarterRequest processStarterRequest) {
+    public ResponseEntity<String> startProcess(@PathVariable String processKey, @RequestBody @Validated ProcessStarterRequest processStarterRequest) {
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processKey).latestVersion().singleResult();
         if (processDefinition == null) {
             return ResponseEntity.badRequest().body("Deployment not found");
         }
         identityService.setAuthenticatedUserId("kevin");
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey, processStarterRequest.getVariables());
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey, processStarterRequest.getBusinessKey(), processStarterRequest.getVariables());
         return ResponseEntity.ok(processInstance.getId());
     }
 

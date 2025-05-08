@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ilpe9v" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.33.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
+  <bpmn:process id="incident_upgrade_event_based_gateway" name="Incident Upgrade" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" camunda:initiator="initiator">
+      <bpmn:extensionElements />
+      <bpmn:outgoing>Flow_197jfx7</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_0f5n7l0">
+      <bpmn:incoming>Flow_1xbdihb</bpmn:incoming>
+      <bpmn:incoming>Flow_0co5ssn</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:eventBasedGateway id="Gateway_IncidentWait" name="Wait for Acknowledgement or Timeout">
+      <bpmn:incoming>Flow_197jfx7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1susfy1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_13jsull</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:sequenceFlow id="Flow_197jfx7" sourceRef="StartEvent_1" targetRef="Gateway_IncidentWait" />
+    <bpmn:intermediateCatchEvent id="Catch_Timeout" name="Escalate After 2h">
+      <bpmn:incoming>Flow_1susfy1</bpmn:incoming>
+      <bpmn:outgoing>Flow_0y0wy7v</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1iyrg1n">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT20S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1susfy1" sourceRef="Gateway_IncidentWait" targetRef="Catch_Timeout" />
+    <bpmn:sequenceFlow id="Flow_0y0wy7v" sourceRef="Catch_Timeout" targetRef="Activity_0a84fyl" />
+    <bpmn:serviceTask id="Activity_0a84fyl" name="Incident Upgrade" camunda:delegateExpression="${incidentUpgradeService}">
+      <bpmn:incoming>Flow_0y0wy7v</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xbdihb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1xbdihb" sourceRef="Activity_0a84fyl" targetRef="Event_0f5n7l0" />
+    <bpmn:sequenceFlow id="Flow_13jsull" sourceRef="Gateway_IncidentWait" targetRef="Event_014vfed" />
+    <bpmn:sequenceFlow id="Flow_0co5ssn" sourceRef="Event_014vfed" targetRef="Event_0f5n7l0" />
+    <bpmn:intermediateCatchEvent id="Event_014vfed" name="Incident Status Changed">
+      <bpmn:incoming>Flow_13jsull</bpmn:incoming>
+      <bpmn:outgoing>Flow_0co5ssn</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0ys9ef4" messageRef="Message_09p3h15" />
+    </bpmn:intermediateCatchEvent>
+  </bpmn:process>
+  <bpmn:signal id="Signal_0eloc4s" name="Signal_Incident_Status_Change" />
+  <bpmn:message id="Message_09p3h15" name="Message_IncidentStatusChange" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="incident_upgrade_event_based_gateway">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="142" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0f5n7l0_di" bpmnElement="Event_0f5n7l0">
+        <dc:Bounds x="692" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0g6xket_di" bpmnElement="Gateway_IncidentWait">
+        <dc:Bounds x="255" y="205" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="315" y="210" width="90" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1rju37d_di" bpmnElement="Catch_Timeout">
+        <dc:Bounds x="392" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="368" y="185" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1wkrpxm_di" bpmnElement="Activity_0a84fyl">
+        <dc:Bounds x="520" y="120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0kdr1t4_di" bpmnElement="Event_014vfed">
+        <dc:Bounds x="392" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="374" y="335" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_197jfx7_di" bpmnElement="Flow_197jfx7">
+        <di:waypoint x="178" y="230" />
+        <di:waypoint x="255" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1susfy1_di" bpmnElement="Flow_1susfy1">
+        <di:waypoint x="280" y="205" />
+        <di:waypoint x="280" y="160" />
+        <di:waypoint x="392" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y0wy7v_di" bpmnElement="Flow_0y0wy7v">
+        <di:waypoint x="428" y="160" />
+        <di:waypoint x="520" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xbdihb_di" bpmnElement="Flow_1xbdihb">
+        <di:waypoint x="620" y="160" />
+        <di:waypoint x="710" y="160" />
+        <di:waypoint x="710" y="212" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13jsull_di" bpmnElement="Flow_13jsull">
+        <di:waypoint x="280" y="255" />
+        <di:waypoint x="280" y="310" />
+        <di:waypoint x="392" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0co5ssn_di" bpmnElement="Flow_0co5ssn">
+        <di:waypoint x="428" y="310" />
+        <di:waypoint x="710" y="310" />
+        <di:waypoint x="710" y="248" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
