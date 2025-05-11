@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_07mzzj3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.33.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
+  <bpmn:process id="Process_1t16d53" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0vabwb4</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_06dnfsw" name="audit" camunda:assignee="${execution.getVariable(&#39;nextAssignee&#39;)}">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_0vabwb4</bpmn:incoming>
+      <bpmn:incoming>Flow_0736qnb</bpmn:incoming>
+      <bpmn:outgoing>Flow_11c5dsx</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0vabwb4" sourceRef="StartEvent_1" targetRef="Activity_06dnfsw" />
+    <bpmn:sequenceFlow id="Flow_11c5dsx" sourceRef="Activity_06dnfsw" targetRef="Gateway_19z6ddg" />
+    <bpmn:exclusiveGateway id="Gateway_19z6ddg">
+      <bpmn:incoming>Flow_11c5dsx</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ntrrvx</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0736qnb</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_01x0224">
+      <bpmn:incoming>Flow_1ntrrvx</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1ntrrvx" name="Next Assignee is Empty" sourceRef="Gateway_19z6ddg" targetRef="Event_01x0224">
+      <bpmn:extensionElements />
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('nextAssignee')==null}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0736qnb" name="New Consignee is not Empty" sourceRef="Gateway_19z6ddg" targetRef="Activity_06dnfsw">
+      <bpmn:extensionElements />
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('nextAssignee') != null}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1t16d53">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02vxai5_di" bpmnElement="Activity_06dnfsw">
+        <dc:Bounds x="290" y="140" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_01x0224_di" bpmnElement="Event_01x0224">
+        <dc:Bounds x="722" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0xt6wrh_di" bpmnElement="Gateway_19z6ddg" isMarkerVisible="true">
+        <dc:Bounds x="515" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0vabwb4_di" bpmnElement="Flow_0vabwb4">
+        <di:waypoint x="218" y="180" />
+        <di:waypoint x="290" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11c5dsx_di" bpmnElement="Flow_11c5dsx">
+        <di:waypoint x="390" y="180" />
+        <di:waypoint x="515" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ntrrvx_di" bpmnElement="Flow_1ntrrvx">
+        <di:waypoint x="565" y="180" />
+        <di:waypoint x="722" y="180" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="604" y="162" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0736qnb_di" bpmnElement="Flow_0736qnb">
+        <di:waypoint x="540" y="155" />
+        <di:waypoint x="540" y="90" />
+        <di:waypoint x="340" y="90" />
+        <di:waypoint x="340" y="140" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="399" y="72" width="89" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
